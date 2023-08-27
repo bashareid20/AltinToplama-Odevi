@@ -1,0 +1,38 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameController : MonoBehaviour
+{
+    public Transform player;
+    public Transform[] goldObjects;
+    public float moveSpeed = 5f;
+    public int score = 0;
+
+    private void Update()
+    {
+        // Oyuncunun hareketi
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput) * moveSpeed * Time.deltaTime;
+        player.Translate(movement);
+
+        // Altın nesnelerini kontrol etme
+        for (int i = 0; i < goldObjects.Length; i++)
+        {
+            if (goldObjects[i] != null)
+            {
+                float distance = Vector3.Distance(player.position, goldObjects[i].position);
+                if (distance < 1f) // Eğer oyuncu altına yakınsa
+                {
+                    score++;
+                    // Altın nesnesini yok et ve puanı artır
+                    Destroy(goldObjects[i].gameObject);
+                    goldObjects[i] = null;
+
+                    // TODO: Altın toplandığında animasyon oynatılabilir
+                }
+            }
+        }
+    }
+}
